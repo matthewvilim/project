@@ -13,18 +13,22 @@
 *************************************************************************
 *************************************************************************
 * Simulation Run Time *
- .PARAM simtime	= '60/bps'	* USE THIS RUNTIME FOR PULSE RESPONSE
-*.PARAM simtime	= '256/bps'	* USE THIS RUNTIME FOR EYE DIAGRAM
+* .PARAM simtime	= '60/bps'	* USE THIS RUNTIME FOR PULSE RESPONSE
+.PARAM simtime	= '256/bps'	* USE THIS RUNTIME FOR EYE DIAGRAM
 
 * CTLE Settings *
- .PARAM az1     = 1k            * CTLE zero frequency, Hz
+ .PARAM az1     = 1k           * CTLE zero frequency, Hz
  .PARAM ap1     = 10k           * CTLE primary pole frequency, Hz
- .PARAM ap2     = 15g           * CTLE secondary pole frequency, Hz
+ .PARAM ap2     = 10g           * CTLE secondary pole frequency, Hz
+* .PARAM az1     = 3.35g            * CTLE zero frequency, Hz
+* .PARAM ap1     = 5.35g           * CTLE primary pole frequency, Hz
+* .PARAM ap2     = 15g           * CTLE secondary pole frequency, Hz
+
 
 * Driver Pre-emphais *
- .PARAM pre1	= 0.13708		* Driver pre-cursor pre-emphasis
- .PARAM post1	= 0.14727		* Driver 1st post-cursor pre-emphasis
- .PARAM post2	= -0.00268	* Driver 2nd post-cursor pre-emphasis
+ .PARAM pre1	= 0.163988		* Driver pre-cursor pre-emphasis
+ .PARAM post1	= 0.271359		* Driver 1st post-cursor pre-emphasis
+ .PARAM post2	= -0.023331	* Driver 2nd post-cursor pre-emphasis
 * .PARAM pre1	= 0.0		* Driver pre-cursor pre-emphasis
 * .PARAM post1	= 0.0		* Driver 1st post-cursor pre-emphasis
 * .PARAM post2	= 0.0		* Driver 2nd post-cursor pre-emphasis
@@ -40,10 +44,10 @@
 				* Positive moves the eye left.
 
 * Single Pulse Signal Source *
- Vs  inp 0    PULSE (1 0 0 trise tfall '(1/bps)-trise' simtime)
+* Vs  inp 0    PULSE (1 0 0 trise tfall '(1/bps)-trise' simtime)
 
 * PRBS7 Signal Source *
-*Xs  inp inn  (bitpattern) dc0=0 dc1=1 baud='1/bps' latency=0 tr=trise
+Xs  inp inn  (bitpattern) dc0=0 dc1=1 baud='1/bps' latency=0 tr=trise
 
 * AC Signal Source *
 *Vs  in 0   AC 1
@@ -154,7 +158,8 @@ Xk2  0  jp9   jn9   jp8  jn8  (conn)			* 4x8 Orthogonal connector
 *			Libraries and Included Files			*
 *                                                                       *
 *************************************************************************
-*.INCLUDE './stripline6_fr4.inc'
+ .INCLUDE './tu_883.rlgc'
+ *.INCLUDE './ds_7409dv.rlgc'
  .INCLUDE './prbs7.inc'
  .INCLUDE './tx_4tap_diff.inc'
  .INCLUDE './rx_eq_diff.inc'
@@ -228,8 +233,9 @@ Xk2  0  jp9   jn9   jp8  jn8  (conn)			* 4x8 Orthogonal connector
 *************************************************************************
 *************************************************************************
  .SUBCKT (diff_stripline) inp inn outp outn length=1 *inch
-    W1 inp 0 outp 0 RLGCMODEL=stripline6_fr4 N=1 l='length*0.0254' delayopt=3
-    W2 inn 0 outn 0 RLGCMODEL=stripline6_fr4 N=1 l='length*0.0254' delayopt=3
+*    W1 inp 0 outp 0 RLGCMODEL=diff_stripline N=1 l='length*0.0254' delayopt=3
+*    W2 inn 0 outn 0 RLGCMODEL=diff_stripline N=2 l='length*0.0254' delayopt=3
+    W1 inp inn 0 outp outn 0 RLGCMODEL=diff_stripline N=2 l='length*0.0254' delayopt=3
  .ENDS (diff_stripline)
 
 *SYSTEM_NAME : stripline6_fr4
@@ -244,19 +250,13 @@ Xk2  0  jp9   jn9   jp8  jn8  (conn)			* 4x8 Orthogonal connector
 *
 * L(H/m), C(F/m), Ro(Ohm/m), Go(S/m), Rs(Ohm/(m*sqrt(Hz)), Gd(S/(m*Hz))
 *
-.MODEL stripline6_fr4 W MODELTYPE=RLGC, N=1
+*.MODEL stripline6_fr4 W MODELTYPE=RLGC, N=1
 *+ Lo = 3.365634e-07
 *+ Co = 1.322366e-10
 *+ Ro = 7.474906e+00
 *+ Go = 0.000000e+00
 *+ Rs = 1.003105e-03
 *+ Gd = 2.492601e-11
-+ Lo = 2.99e-08
-+ Co = 1.05e-11
-+ Ro = 0.00e+00
-+ Go = 0.00e+00
-+ Rs = 1.45e-04
-+ Gd = 1.98e-13
 *************************************************************************
 *************************************************************************
 

@@ -1,10 +1,10 @@
 import numpy as np
 
-pre = -0.36641
-cursor = 0.18808
-post1 = -0.35177
-post2 = -0.4707
-zero = -0.49841
+pre = -0.3739
+cursor = -0.1548
+post1 = -0.29302
+post2 = -0.39439
+zero = -0.46912
 
 x1 = pre - zero
 x0 = cursor - zero
