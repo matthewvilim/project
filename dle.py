@@ -1,10 +1,10 @@
 import numpy as np
 
-pre = -0.3739
-cursor = -0.1548
-post1 = -0.29302
-post2 = -0.39439
-zero = -0.46912
+pre = -0.50567
+cursor = -0.13674
+post1 = -0.37302
+post2 = -0.4961
+zero = -0.58578
 
 x1 = pre - zero
 x0 = cursor - zero
@@ -16,6 +16,6 @@ A = np.matrix([[x0, xn1, xn2, 0], [x1, x0, xn1, xn2], [0, x1, x0, xn1], [0, 0, x
 c = np.linalg.solve(A, y)
 c_norm = c / np.sum(np.absolute(c))
 
-print "post2: %f" % -c_norm[0]
-print "post1: %f" % -c_norm[1]
 print "pre: %f" % -c_norm[3]
+print "post1: %f" % -c_norm[1]
+print "post2: %f" % -c_norm[0]
