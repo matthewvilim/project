@@ -20,18 +20,18 @@
  .PARAM az1     = 1k           * CTLE zero frequency, Hz
  .PARAM ap1     = 10k           * CTLE primary pole frequency, Hz
  .PARAM ap2     = 10g           * CTLE secondary pole frequency, Hz
-* .PARAM az1     = 3.35g            * CTLE zero frequency, Hz
-* .PARAM ap1     = 5.35g           * CTLE primary pole frequency, Hz
-* .PARAM ap2     = 15g           * CTLE secondary pole frequency, Hz
+* .PARAM az1     = 3g            * CTLE zero frequency, Hz
+* .PARAM ap1     = 6g           * CTLE primary pole frequency, Hz
+* .PARAM ap2     = 10g           * CTLE secondary pole frequency, Hz
 
 
 * Driver Pre-emphais *
- .PARAM pre1	= 0.163988		* Driver pre-cursor pre-emphasis
- .PARAM post1	= 0.271359		* Driver 1st post-cursor pre-emphasis
- .PARAM post2	= -0.023331	* Driver 2nd post-cursor pre-emphasis
-* .PARAM pre1	= 0.0		* Driver pre-cursor pre-emphasis
-* .PARAM post1	= 0.0		* Driver 1st post-cursor pre-emphasis
-* .PARAM post2	= 0.0		* Driver 2nd post-cursor pre-emphasis
+* .PARAM pre1	= 0.10966		* Driver pre-cursor pre-emphasis
+* .PARAM post1	= 0.270306		* Driver 1st post-cursor pre-emphasis
+* .PARAM post2	= -0.005305	* Driver 2nd post-cursor pre-emphasis
+ .PARAM pre1	= 0.0		* Driver pre-cursor pre-emphasis
+ .PARAM post1	= 0.0		* Driver 1st post-cursor pre-emphasis
+ .PARAM post2	= 0.0		* Driver 2nd post-cursor pre-emphasis
 
 
 
@@ -56,15 +56,17 @@ Xs  inp inn  (bitpattern) dc0=0 dc1=1 baud='1/bps' latency=0 tr=trise
 *************************************************************************
 
 * Driver Volatage and Timing *
- .PARAM vd	= 1000m		* Driver peak to peak diff drive, volts
- .PARAM trise	= 60p		* Driver rise time, seconds
- .PARAM tfall	= 60p		* Driver fall time, seconds
+ .PARAM vd	= 1250m		* Driver peak to peak diff drive, volts
+* reduce rise and fall time for higher bit rates (60bps at 6.25g)
+ .PARAM trise	= .375/bps		* Driver rise time, seconds
+ .PARAM tfall	= .375/bps		* Driver fall time, seconds
  .PARAM bps	= 10.7g		* Bit rate, bits per second
+* .PARAM bps	= 6.25g		* Bit rate, bits per second
 
 * PCB Line Lengths *
- .PARAM len1	= 10		* Line segment 1 length, inches
- .PARAM len2	= 12		* Line segment 2 length, inches
- .PARAM len3	= 11		* Line segment 3 length, inches
+ .PARAM len1	= 12		* Line segment 1 length, inches
+* .PARAM len2	= 12		* Line segment 2 length, inches
+ .PARAM len3	= 10		* Line segment 3 length, inches
  .PARAM len4	= 1		* Line segment 4 length, inches
 
 * Package Parameters *
@@ -116,10 +118,10 @@ Xs  inp inn  (bitpattern) dc0=0 dc1=1 baud='1/bps' latency=0 tr=trise
 * Xk2  0  jp9   jn9   jp8  jn8  (conn)			* Backplane connector
 
 * 4x8 Orthogonal Midplane Interconnect *
-Xk1  0  jp4   jn4   jp5  jn5  (conn)			* 4x8 Orthogonal connector
+Xk1  0 jp4   jn4   jp5  jn5  (conn)			* 4x8 Orthogonal connector
 Tmp1    jp5 0 jp8 0 Z0=50 TD=40p			* Through-midplane via
 Tmp2    jn5 0 jn8 0 Z0=50 TD=40p			* Through-midplane via
-Xk2  0  jp9   jn9   jp8  jn8  (conn)			* 4x8 Orthogonal connector
+Xk2  0 jp9   jn9   jp8  jn8  (conn)			* 4x8 Orthogonal connector
 
 * 6x12 Orthogonal Midplane Interconnect *
 *Xk1  0  jp4   jn4   jp9  jn9  (conn)			* 6x12 Orthogonal connector
@@ -158,8 +160,9 @@ Xk2  0  jp9   jn9   jp8  jn8  (conn)			* 4x8 Orthogonal connector
 *			Libraries and Included Files			*
 *                                                                       *
 *************************************************************************
- .INCLUDE './tu_883.rlgc'
- *.INCLUDE './ds_7409dv.rlgc'
+ .INCLUDE './connector.inc'
+ .INCLUDE './ds_7409dv.rlgc'
+* .INCLUDE './tu_883.rlgc'
  .INCLUDE './prbs7.inc'
  .INCLUDE './tx_4tap_diff.inc'
  .INCLUDE './rx_eq_diff.inc'
@@ -186,42 +189,6 @@ Xk2  0  jp9   jn9   jp8  jn8  (conn)			* 4x8 Orthogonal connector
 *     T2  inn ref outn ref Z0=50 TD=150p					*
 * .ENDS (conn)								*
 *************************************************************************
-.SUBCKT (conn) ref inp inn outp outn
-.PARAM rref = 50
-  * Mideplane Side Termination *
-  * R1    1 0   rref
-  * R3    3 0   rref
-    R5    5 0   rref
-    R7    7 0   rref
-    R9    9 0   rref
-    R11  11 0   rref
-    R13  13 0   rref
-    R15  15 0   rref
-    R17  17 0   rref
-    R19  19 0   rref
-    R21  21 0   rref
-    R23  23 0   rref
-
-  * Connector *
-    S1 inp outp inn outn 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 MNAME=s_model
-
-  * Daughter Card Side Termination
-  * R2    2 0   rref
-  * R4    4 0   rref
-    R6    6 0   rref
-    R8    8 0   rref
-    R10  10 0   rref
-    R12  12 0   rref
-    R14  14 0   rref
-    R16  16 0   rref
-    R18  18 0   rref
-    R20  20 0   rref
-    R22  22 0   rref
-    R24  24 0   rref
-  * Connector S-parameter Model *
-    .MODEL s_model S TSTONEFILE='./Orthogonal_rev12_Full_Final.s24p'
-.ENDS (conn)
-
 *************************************************************************
 
 *************************************************************************
@@ -289,7 +256,8 @@ Xk2  0  jp9   jn9   jp8  jn8  (conn)			* 4x8 Orthogonal connector
 *************************************************************************
  .OPTIONS post ACCURATE
 *.AC DEC 1000 (100k,10g) SWEEP DATA=plens
- .TRAN 5p simtime SWEEP DATA=plens
+* .TRAN 5p simtime SWEEP DATA=plens
+ .TRAN 5p simtime
  .DATA	plens
 +       az1     ap1     ap2	pre1
 +	1k	1k	100g	0.0
