@@ -1,7 +1,7 @@
 * Connector
 
-.SUBCKT (conn) ref inp inn outp outn rref=50
-*.PARAM rref = 50
+.SUBCKT (conn) ref inp inn outp outn
+.PARAM rref = 50
   * Mideplane Side Termination *
   * R1    1 0   rref
   * R3    3 0   rref

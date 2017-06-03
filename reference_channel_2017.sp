@@ -17,28 +17,38 @@
 .PARAM simtime	= '256/bps'	* USE THIS RUNTIME FOR EYE DIAGRAM
 
 * CTLE Settings *
+* DEFAULT
  .PARAM az1     = 1k           * CTLE zero frequency, Hz
  .PARAM ap1     = 10k           * CTLE primary pole frequency, Hz
  .PARAM ap2     = 10g           * CTLE secondary pole frequency, Hz
-* .PARAM az1     = 3g            * CTLE zero frequency, Hz
-* .PARAM ap1     = 6g           * CTLE primary pole frequency, Hz
+* LONG
+* .PARAM az1     = 1.3g            * CTLE zero frequency, Hz
+* .PARAM ap1     = 5.1g           * CTLE primary pole frequency, Hz
+* .PARAM ap2     = 10g           * CTLE secondary pole frequency, Hz
+* SHORT
+* .PARAM az1     = 2.0g            * CTLE zero frequency, Hz
+* .PARAM ap1     = 5.1g           * CTLE primary pole frequency, Hz
 * .PARAM ap2     = 10g           * CTLE secondary pole frequency, Hz
 
-
 * Driver Pre-emphais *
-* .PARAM pre1	= 0.10966		* Driver pre-cursor pre-emphasis
-* .PARAM post1	= 0.270306		* Driver 1st post-cursor pre-emphasis
-* .PARAM post2	= -0.005305	* Driver 2nd post-cursor pre-emphasis
+* DEFAULT
  .PARAM pre1	= 0.0		* Driver pre-cursor pre-emphasis
  .PARAM post1	= 0.0		* Driver 1st post-cursor pre-emphasis
  .PARAM post2	= 0.0		* Driver 2nd post-cursor pre-emphasis
-
-
+* LONG
+* .PARAM pre1	= 0.09		* Driver pre-cursor pre-emphasis
+* .PARAM post1	= 0.0		* Driver 1st post-cursor pre-emphasis
+* .PARAM post2	= 0.0		* Driver 2nd post-cursor pre-emphasis
+* SHORT
+* .PARAM pre1	= 0.06		* Driver pre-cursor pre-emphasis
+* .PARAM post1	= 0.0		* Driver 1st post-cursor pre-emphasis
+* .PARAM post2	= 0.0		* Driver 2nd post-cursor pre-emphasis
 
 * Eye delay -- In awaves viewer, plot signal rx_diff against signal eye
 *              then adjust parameter edui to center the data eye.
 *
- .PARAM edui	= 0.00	 	* Eye diagram alignment delay.
+* DEFAULT
+ .PARAM edui	= 0.0	 	* Eye diagram alignment delay.
  				* Units are fraction of 1 bit time.
 				* Negative moves the eye rigth.
 				* Positive moves the eye left.
@@ -47,10 +57,10 @@
 * Vs  inp 0    PULSE (1 0 0 trise tfall '(1/bps)-trise' simtime)
 
 * PRBS7 Signal Source *
-Xs  inp inn  (bitpattern) dc0=0 dc1=1 baud='1/bps' latency=0 tr=trise
+* Xs  inp inn  (bitpattern) dc0=0 dc1=1 baud='1/bps' latency=0 tr=trise
 
 * AC Signal Source *
-*Vs  in 0   AC 1
+Vs  in 0   AC 1
 
 *************************************************************************
 *************************************************************************
@@ -58,15 +68,17 @@ Xs  inp inn  (bitpattern) dc0=0 dc1=1 baud='1/bps' latency=0 tr=trise
 * Driver Volatage and Timing *
  .PARAM vd	= 1250m		* Driver peak to peak diff drive, volts
 * reduce rise and fall time for higher bit rates (60bps at 6.25g)
- .PARAM trise	= .375/bps		* Driver rise time, seconds
- .PARAM tfall	= .375/bps		* Driver fall time, seconds
+ .PARAM trise	= 30p		* Driver rise time, seconds
+ .PARAM tfall	= 30p		* Driver fall time, seconds
  .PARAM bps	= 10.7g		* Bit rate, bits per second
 * .PARAM bps	= 6.25g		* Bit rate, bits per second
 
 * PCB Line Lengths *
  .PARAM len1	= 12		* Line segment 1 length, inches
-* .PARAM len2	= 12		* Line segment 2 length, inches
- .PARAM len3	= 10		* Line segment 3 length, inches
+* LONG
+ .PARAM len3	= 9.7		* Line segment 3 length, inches
+* SHORT
+* .PARAM len3	= 1.6		* Line segment 3 length, inches
  .PARAM len4	= 1		* Line segment 4 length, inches
 
 * Package Parameters *
@@ -118,10 +130,11 @@ Xs  inp inn  (bitpattern) dc0=0 dc1=1 baud='1/bps' latency=0 tr=trise
 * Xk2  0  jp9   jn9   jp8  jn8  (conn)			* Backplane connector
 
 * 4x8 Orthogonal Midplane Interconnect *
-Xk1  0 jp4   jn4   jp5  jn5  (conn)			* 4x8 Orthogonal connector
-Tmp1    jp5 0 jp8 0 Z0=50 TD=40p			* Through-midplane via
-Tmp2    jn5 0 jn8 0 Z0=50 TD=40p			* Through-midplane via
-Xk2  0 jp9   jn9   jp8  jn8  (conn)			* 4x8 Orthogonal connector
+Xk1  0 jp4   jn4   jp9  jn9  (conn)			* 4x8 Orthogonal connector
+*Xk1  0 jp4   jn4   jp5  jn5  (conn)			* 4x8 Orthogonal connector
+*Tmp1    jp5 0 jp8 0 Z0=50 TD=40p			* Through-midplane via
+*Tmp2    jn5 0 jn8 0 Z0=50 TD=40p			* Through-midplane via
+*Xk2  0 jp9   jn9   jp8  jn8  (conn)			* 4x8 Orthogonal connector
 
 * 6x12 Orthogonal Midplane Interconnect *
 *Xk1  0  jp4   jn4   jp9  jn9  (conn)			* 6x12 Orthogonal connector
@@ -160,7 +173,7 @@ Xk2  0 jp9   jn9   jp8  jn8  (conn)			* 4x8 Orthogonal connector
 *			Libraries and Included Files			*
 *                                                                       *
 *************************************************************************
- .INCLUDE './connector.inc'
+ .INCLUDE './connector2.inc'
  .INCLUDE './ds_7409dv.rlgc'
 * .INCLUDE './tu_883.rlgc'
  .INCLUDE './prbs7.inc'
@@ -255,12 +268,17 @@ Xk2  0 jp9   jn9   jp8  jn8  (conn)			* 4x8 Orthogonal connector
 *                                                                       *
 *************************************************************************
  .OPTIONS post ACCURATE
-*.AC DEC 1000 (100k,10g) SWEEP DATA=plens
+.AC DEC 1000 (100k,10g) SWEEP DATA=plens
 * .TRAN 5p simtime SWEEP DATA=plens
- .TRAN 5p simtime
+* .TRAN 5p simtime
  .DATA	plens
 +       az1     ap1     ap2	pre1
+* DEFAULT
 +	1k	1k	100g	0.0
+* LONG
++	1.3g	5.1g	10g	0.09
+* SHORT
+*+	2.0g	5.1g	10g	0.06
 *+	800meg	3.125g	100g	0.0
 *+	850meg	3.125g	10g	0.0
 *+	850meg	3.125g	10g	0.16
