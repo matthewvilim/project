@@ -62,6 +62,14 @@
 * AC Signal Source *
 Vs  in 0   AC 1
 
+* S11 parameter calc
+*Vs  in1 0   AC 2
+*R1 in1 inr rterm
+*R2 inr 0 rterm
+*R3 in1 in rterm
+*E1 gamma1 0 (in, inr) 1
+*Rgamma gamma1 0 1G
+
 *************************************************************************
 *************************************************************************
 
